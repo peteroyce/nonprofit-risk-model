@@ -1,5 +1,9 @@
 # nonprofit-risk-model
 
+[![CI](https://github.com/peteroyce/nonprofit-risk-model/actions/workflows/ci.yml/badge.svg)](https://github.com/peteroyce/nonprofit-risk-model/actions)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688.svg)](https://fastapi.tiangolo.com)
+
 Machine learning model that predicts the probability a US nonprofit will have its IRS tax-exempt status revoked. Trained on 1.8M+ public IRS records.
 
 Built to complement [CharityGuard](https://github.com/peteroyce/CharityGuard) — where fraud detection runs at the transaction level, this model runs at the **organisation level**.
@@ -66,17 +70,18 @@ Top SHAP features: `years_since_filing`, `filing_req_code`, `foundation_code`, `
 python -m venv venv && source venv/Scripts/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-# 1. Download IRS data (~50MB)
-python -m src.data.download
+# Full pipeline (download → preprocess → train → evaluate)
+make all
 
-# 2. Preprocess + label
-python -m src.data.preprocess
+# Or step by step via the CLI:
+python -m src.cli download            # Download IRS data (~50MB)
+python -m src.cli preprocess          # Build features and labels
+python -m src.cli train               # Train the XGBoost model
+python -m src.cli evaluate            # Generate evaluation report
+python -m src.cli serve               # Start the API server
 
-# 3. Train the model (~5-10 min on full dataset)
-python -m src.models.train
-
-# 4. Run the API
-uvicorn src.api.main:app --reload --port 8000
+# Score from the command line
+python -m src.cli predict 53-0196605 "American Red Cross" --state DC --explain
 ```
 
 API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
@@ -136,22 +141,25 @@ curl http://localhost:8000/model/info
 ```
 nonprofit-risk-model/
 ├── src/
+│   ├── cli.py                CLI for pipeline management
+│   ├── config.py             Central configuration
 │   ├── data/
 │   │   ├── download.py       Download IRS BMF + revocations
-│   │   └── preprocess.py     Label + clean + feature extraction
+│   │   ├── preprocess.py     Label + clean + feature extraction
+│   │   └── validate.py       Data integrity checks
 │   ├── features/
 │   │   └── engineering.py    Rule-based flags + score blending
 │   ├── models/
 │   │   ├── train.py          XGBoost training + SHAP
-│   │   └── predict.py        Inference interface
+│   │   ├── predict.py        Inference interface
+│   │   └── evaluate.py       Evaluation report generation
 │   └── api/
-│       └── main.py           FastAPI endpoints
-├── notebooks/
-│   └── 01_exploration.ipynb  Data exploration and model analysis
-├── tests/
-│   └── test_features.py      Unit tests for feature logic
+│       └── main.py           FastAPI endpoints (CORS, versioned)
+├── tests/                    Unit + integration tests
+├── reports/                  (generated) evaluation reports
 ├── models/                   (gitignored) trained model artefacts
 ├── data/                     (gitignored) IRS data downloads
+├── Makefile                  Common workflows
 └── requirements.txt
 ```
 

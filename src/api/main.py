@@ -24,7 +24,7 @@ from typing import Optional
 from fastapi import APIRouter, FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from src.config import API_PREFIX, API_VERSION, MAX_BATCH_SIZE, MODELS_DIR
 from src.models.predict import predict_risk, warmup
@@ -105,6 +105,34 @@ class NonprofitInput(BaseModel):
     ein: str = Field(..., description="IRS Employer Identification Number", examples=["53-0196605"])
     name: str = Field(..., description="Organisation name", examples=["American Red Cross"])
     state: str = Field("UNK", description="2-letter US state code", examples=["DC"])
+
+    @field_validator("ein")
+    @classmethod
+    def validate_ein(cls, v: str) -> str:
+        """Normalise and validate EIN format (XX-XXXXXXX or 9 digits)."""
+        stripped = v.replace("-", "").replace(" ", "")
+        if not stripped.isdigit() or len(stripped) != 9:
+            raise ValueError(
+                f"EIN must be 9 digits (with optional dash), got: {v!r}"
+            )
+        return f"{stripped[:2]}-{stripped[2:]}"
+
+    @field_validator("state")
+    @classmethod
+    def validate_state(cls, v: str) -> str:
+        """Accept 2-letter state codes or 'UNK'; uppercase automatically."""
+        v = v.strip().upper()
+        if v != "UNK" and (len(v) != 2 or not v.isalpha()):
+            raise ValueError(
+                f"State must be a 2-letter code or 'UNK', got: {v!r}"
+            )
+        return v
+
+    @field_validator("ntee_major")
+    @classmethod
+    def validate_ntee(cls, v: str) -> str:
+        """Uppercase the NTEE major code."""
+        return v.strip().upper() if v else "Z"
     asset_code_usd: float = Field(0.0, ge=0, description="Approximate total assets (USD)")
     income_code_usd: float = Field(0.0, ge=0, description="Approximate total income (USD)")
     revenue_amount: float = Field(0.0, ge=0, description="Reported revenue (USD)")

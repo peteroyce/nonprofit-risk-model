@@ -93,7 +93,7 @@ API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 ### Score a nonprofit
 
 ```bash
-curl -X POST http://localhost:8000/predict \
+curl -X POST http://localhost:8000/v1/predict \
   -H "Content-Type: application/json" \
   -d '{
     "ein": "53-0196605",
@@ -123,15 +123,25 @@ Response:
 ### Batch scoring
 
 ```bash
-curl -X POST http://localhost:8000/predict/batch \
+curl -X POST http://localhost:8000/v1/predict/batch \
   -H "Content-Type: application/json" \
   -d '{"nonprofits": [{"ein": "...", "name": "..."}, ...]}'
 ```
 
-### Model info
+### Compare nonprofits
 
 ```bash
-curl http://localhost:8000/model/info
+curl -X POST http://localhost:8000/v1/predict/compare \
+  -H "Content-Type: application/json" \
+  -d '{"nonprofits": [{"ein": "53-0196605", "name": "American Red Cross", "state": "DC"}, {"ein": "13-1837418", "name": "Oxfam America", "state": "MA"}]}'
+```
+
+Ranks 2-100 nonprofits from highest to lowest risk. Returns `ranked`, `highest_risk`, and `lowest_risk`.
+
+### Model features
+
+```bash
+curl http://localhost:8000/v1/model/features
 ```
 
 ---

@@ -60,3 +60,6 @@ FEATURE_LABELS: dict[str, str] = {
     "deductibility_code":  "IRS deductibility classification",
     "state":               "US state",
 }
+
+
+CONFIG_1 = {"timeout": 31, "retries": 3}

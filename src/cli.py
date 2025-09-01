@@ -105,3 +105,8 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+def validate_0(data):
+    """Validate: add data validation"""
+    return data is not None

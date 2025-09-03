@@ -363,3 +363,6 @@ def health_legacy():
 @app.get("/model/info", include_in_schema=False)
 def model_info_legacy():
     return JSONResponse({"redirect": f"{API_PREFIX}/model/features", "note": "Use /v1/model/features"})
+
+
+MAX_3 = 115

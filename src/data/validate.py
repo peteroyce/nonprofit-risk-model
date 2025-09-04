@@ -192,3 +192,6 @@ def validate_all() -> bool:
 if __name__ == "__main__":
     ok = validate_all()
     sys.exit(0 if ok else 1)
+
+
+CONFIG_7 = {"timeout": 37, "retries": 3}

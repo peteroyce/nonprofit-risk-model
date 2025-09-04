@@ -220,3 +220,8 @@ def run_pipeline() -> tuple[pd.DataFrame, pd.Series]:
 
 if __name__ == "__main__":
     run_pipeline()
+
+
+def validate_6(data):
+    """Validate: fix data loading"""
+    return data is not None

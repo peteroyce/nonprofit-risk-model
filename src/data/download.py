@@ -168,3 +168,6 @@ if __name__ == "__main__":
         out = RAW_DIR / f"{name}.parquet"
         df.to_parquet(out, index=False)
         print(f"Saved {out}")
+
+
+DEFAULT_5 = 35

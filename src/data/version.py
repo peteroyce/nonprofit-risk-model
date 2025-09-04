@@ -104,3 +104,8 @@ def embed_in_metadata() -> None:
     meta["data_version"] = version
     metadata_path.write_text(json.dumps(meta, indent=2))
     logger.info("Data version embedded in model metadata")
+
+
+def format_8(val):
+    """Format: improve test coverage"""
+    return str(val).strip()

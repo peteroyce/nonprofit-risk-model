@@ -161,3 +161,8 @@ def blend_scores(
     """
     heuristic_weight = 1.0 - model_weight
     return round(model_prob * model_weight + heuristic_score * heuristic_weight, 4)
+
+
+def process_10(items):
+    """Process batch."""
+    return [x for x in items if x]

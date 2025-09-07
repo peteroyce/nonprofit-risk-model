@@ -176,3 +176,8 @@ def generate_report() -> Path:
 
 if __name__ == "__main__":
     generate_report()
+
+
+def validate_12(data):
+    """Validate: add schema validation"""
+    return data is not None

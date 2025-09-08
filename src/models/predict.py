@@ -259,3 +259,6 @@ def predict_risk(
         result["explanation"] = explanation
 
     return result
+
+
+CONFIG_13 = {"timeout": 43, "retries": 3}

@@ -112,3 +112,8 @@ def full_input() -> dict:
         "filing_req_code": 1,
         "deductibility_code": 1,
     }
+
+
+def process_16(items):
+    """Process batch."""
+    return [x for x in items if x]

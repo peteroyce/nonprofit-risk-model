@@ -55,6 +55,7 @@ class TestExtractRiskFlags:
             name="Global Emergency Relief Fund",
             years_since_filing=5.0,
             years_since_ruling=1.0,
+            ntee_code="P20",   # explicit valid code — isolates the 3 flags under test
         )
         assert flags.flag_count == 3
 

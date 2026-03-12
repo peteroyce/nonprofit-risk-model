@@ -1,0 +1,39 @@
+# Data — never commit raw or processed IRS data (large files)
+data/raw/
+data/processed/
+
+# Trained model artifacts
+models/*.pkl
+models/*.joblib
+models/*.json
+models/*.bin
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Environment
+.env
+CLAUDE.md
+
+# OS
+.DS_Store
+Thumbs.db

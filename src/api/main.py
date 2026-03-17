@@ -22,6 +22,7 @@ from contextlib import asynccontextmanager
 from typing import Optional
 
 from fastapi import APIRouter, FastAPI, HTTPException, Query, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -68,6 +69,15 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,
+)
+
+# CORS — allow frontends (e.g. CharityGuard dashboard) to call the API
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 

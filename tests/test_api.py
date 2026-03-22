@@ -119,6 +119,43 @@ class TestPredict:
             assert body["risk_label"] in ("low", "medium", "high")
 
 
+# ── Input validation ──────────────────────────────────────────────────────────
+
+class TestInputValidation:
+    def test_ein_with_dash_accepted(self, client, mock_predict_single):
+        res = client.post("/v1/predict", json={"ein": "53-0196605", "name": "Red Cross"})
+        assert res.status_code == 200
+
+    def test_ein_without_dash_accepted(self, client, mock_predict_single):
+        res = client.post("/v1/predict", json={"ein": "530196605", "name": "Red Cross"})
+        assert res.status_code == 200
+
+    def test_ein_too_short_rejected(self, client, mock_predict_single):
+        res = client.post("/v1/predict", json={"ein": "1234", "name": "Bad Org"})
+        assert res.status_code == 422
+
+    def test_ein_non_numeric_rejected(self, client, mock_predict_single):
+        res = client.post("/v1/predict", json={"ein": "ABCDEFGHI", "name": "Bad Org"})
+        assert res.status_code == 422
+
+    def test_ein_empty_rejected(self, client, mock_predict_single):
+        res = client.post("/v1/predict", json={"ein": "", "name": "Bad Org"})
+        assert res.status_code == 422
+
+    def test_state_uppercased(self, client, mock_predict_single):
+        res = client.post("/v1/predict", json={"ein": "12-3456789", "name": "Org", "state": "ca"})
+        assert res.status_code == 200
+
+    def test_invalid_state_rejected(self, client, mock_predict_single):
+        res = client.post("/v1/predict", json={"ein": "12-3456789", "name": "Org", "state": "XYZ"})
+        assert res.status_code == 422
+
+    def test_ein_normalized_to_dash_format(self, client, mock_predict_single):
+        client.post("/v1/predict", json={"ein": "530196605", "name": "Test"})
+        call_kwargs = mock_predict_single.call_args.kwargs
+        assert call_kwargs["ein"] == "53-0196605"
+
+
 # ── POST /v1/predict/batch ────────────────────────────────────────────────────
 
 class TestPredictBatch:

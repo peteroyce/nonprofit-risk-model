@@ -146,7 +146,8 @@ nonprofit-risk-model/
 │   ├── data/
 │   │   ├── download.py       Download IRS BMF + revocations
 │   │   ├── preprocess.py     Label + clean + feature extraction
-│   │   └── validate.py       Data integrity checks
+│   │   ├── validate.py       Data integrity checks
+│   │   └── version.py        Data versioning (SHA-256 checksums)
 │   ├── features/
 │   │   └── engineering.py    Rule-based flags + score blending
 │   ├── models/
@@ -169,7 +170,12 @@ nonprofit-risk-model/
 
 ```bash
 pytest tests/ -v
+
+# With coverage
+pytest tests/ --cov=src --cov-report=term-missing -v
 ```
+
+Coverage includes: API endpoints, feature engineering, preprocessing pipeline, data versioning, and input validation.
 
 ---
 
